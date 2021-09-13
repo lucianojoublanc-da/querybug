@@ -1,0 +1,32 @@
+module Main where
+
+import Daml.Script
+
+type AssetId = ContractId Asset
+
+template Asset
+  with
+    issuer : Party
+    owner  : Party
+    name   : Text
+  where
+    ensure name /= ""
+    signatory issuer
+
+    key (issuer, name) : (Party, Text)
+    maintainer key._1
+
+    controller owner can
+      Give : AssetId
+        with
+          newOwner : Party
+        do
+          create this with
+            owner = newOwner
+
+setup = script do
+  alice <- allocatePartyWithHint "Alice" (PartyIdHint "Alice")
+  bob <- allocatePartyWithHint "Bob" (PartyIdHint "Bob")
+
+  Some _ <- queryContractKey @Asset alice (alice, "foo")
+  return ()
