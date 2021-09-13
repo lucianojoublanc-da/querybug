@@ -26,7 +26,6 @@ template Asset
 
 setup = script do
   alice <- allocatePartyWithHint "Alice" (PartyIdHint "Alice")
-  bob <- allocatePartyWithHint "Bob" (PartyIdHint "Bob")
 
-  Some _ <- queryContractKey @Asset alice (alice, "foo")
+  Some res <- queryContractKey @Asset alice (alice, "foo")
   return ()
